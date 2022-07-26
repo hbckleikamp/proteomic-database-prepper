@@ -6,3 +6,6 @@ It includes options to:
 - Remove Ambiguous amino acids
 - Add decoy sequences (reversed or scrambled)
 - Select only bacterial and archaeal sequences 
+
+
+The parsed NCBI taxonomy file needed to select only bacterial and archaeal sequences is constructed with https://github.com/hbckleikamp/NCBI2Lineage.
