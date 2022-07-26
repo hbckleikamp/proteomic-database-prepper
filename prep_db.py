@@ -1,19 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 29 15:50:05 2022
 
-@author: ZR48SA
-"""
-
-import Bio
-from Bio import SeqIO
-from pyteomics.parser import cleave
-from pathlib import Path
-import pandas as pd
-
-infile="C:/Comet/uniprot_sprot.fasta"
-outfile=Path(infile).stem
-batchsize=10000
 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -37,7 +22,7 @@ basedir=os.getcwd()
 
 import Bio
 from Bio import SeqIO
-
+import pandas as pd
 import itertools
 import random
 
@@ -53,11 +38,11 @@ Add_decoy=True        # append decoy of reversed peptides
 #%% Variables
 
 
-Path_to_db="C:/Comet/Diamond_databases/uniref50.fasta"          # path to protein database that uses NCBI taxonomy
+Path_to_db="path/to/db"          # path to protein database that uses NCBI taxonomy
 
 
 #for Bacterial_only
-Path_to_taxonomy="D:/paper 4 martin/HK_Novolign/names.tsv" # path to parsed NCBI taxonomy
+Path_to_taxonomy="path/to/taxonomy" # path to parsed NCBI taxonomy (as created by https://github.com/hbckleikamp/NCBI2Lineage)
 Taxid_delimiter="TaxID=" #Important variable! OX= for UniProtKB, TaxID= for Uniref50, check how this is done
 
 #for Remove_ambiguous
