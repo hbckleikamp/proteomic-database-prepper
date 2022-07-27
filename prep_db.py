@@ -99,6 +99,7 @@ with open(Output_path,"w+") as f:
             if Bacterial_only:
                 if Taxid_delimiter in d:
                     tax=r.description.split(Taxid_delimiter)[1].split()[0] #get taxonomic identifiers
+                    taxs.append(tax)
                 else: print("taxonomy delimiter not found!")
             
             if Equate_IL:
@@ -113,10 +114,11 @@ with open(Output_path,"w+") as f:
                     rs.append([decoy_delimiter+d,s[::-1]])
                 if decoy_method=="scramble":
                     rs.append([decoy_delimiter+d,''.join(random.sample(s, len(s)))])
-                taxs.append(tax)
+                if Bacterial_only:
+                    taxs.append(tax)
             
             rs.append([d,s])
-            taxs.append(tax)
+            
         
         if Bacterial_only:
             rs=pd.Series(rs)[pd.Series(taxs).isin(taxdf.OX)].tolist() #select only those that have superkingdom Archaea or Bacteria
