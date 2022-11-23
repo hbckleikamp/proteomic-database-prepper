@@ -106,7 +106,7 @@ with open(Output_path,"w+") as f:
         chunk_df=pd.DataFrame([[str(r.seq),r.description] for r in c],columns=["seq","description"])
     
         if Equate_IL: chunk_df["seq"]=chunk_df["seq"].str.replace("I","L").str.replace("J","L")
-        if Remove_ambiguous: chunk_df=chunk_df[pd.concat([chunk_df["seq"].str.contains(aa,regex=False) for aa in Ambiguous_AAs],axis=1).any(axis=1)]
+        if Remove_ambiguous: chunk_df=chunk_df[~pd.concat([chunk_df["seq"].str.contains(aa,regex=False) for aa in Ambiguous_AAs],axis=1).any(axis=1)]
         if GTDB_only: chunk_df=chunk_df[chunk_df["description"].str.split(Taxid_delimiter).apply(lambda x: x[-1].split(" ")[0]).isin(taxdf.ncbi_taxid)]
         
         if Add_decoy:
