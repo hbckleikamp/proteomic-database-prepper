@@ -59,6 +59,7 @@ import subprocess
 GTDB_only=True  # retain only Bacteria (and Archaea(!)) in database  
 Equate_IL=True        # change I and J into L 
 Remove_ambiguous=True # remove ambiguous amino acids "B","O","U","X","Z","[","(" , and J in case IL is not equated
+No_Fragments=True     # remove incomplete sequences from UniprotKB contain (Fragment)/(Fragments) in header
 Add_decoy=False        # append decoy of reversed or scrambled peptides
 decoy_method="reverse" #or "scrambled
 
@@ -73,8 +74,11 @@ def chunk_gen(it,size=10**6):
 Output_path=Path_to_db
 if GTDB_only:   Output_path=Output_path.replace(".fasta","_GTDB.fasta")
 if Remove_ambiguous: Output_path=Output_path.replace(".fasta","_NoAmb.fasta")
+if No_Fragments:     Output_path=Output_path.replace(".fasta","_NoFrag.fasta")
 if Equate_IL:        Output_path=Output_path.replace(".fasta","_IJeqL.fasta")
 if Add_decoy:        Output_path=Output_path.replace(".fasta","_Decoy.fasta")
+
+#add minimum length?
 
 # GTDB tax database and files
 ranks=["superkingdom","phylum","class","order","family","genus","species"] 
@@ -105,9 +109,10 @@ with open(Output_path,"w+") as f:
 
         chunk_df=pd.DataFrame([[str(r.seq),r.description] for r in c],columns=["seq","description"])
     
-        if Equate_IL: chunk_df["seq"]=chunk_df["seq"].str.replace("I","L").str.replace("J","L")
+        if Equate_IL:        chunk_df["seq"]=chunk_df["seq"].str.replace("I","L").str.replace("J","L")
         if Remove_ambiguous: chunk_df=chunk_df[~pd.concat([chunk_df["seq"].str.contains(aa,regex=False) for aa in Ambiguous_AAs],axis=1).any(axis=1)]
-        if GTDB_only: chunk_df=chunk_df[chunk_df["description"].str.split(Taxid_delimiter).apply(lambda x: x[-1].split(" ")[0]).isin(taxdf.ncbi_taxid)]
+        if No_Fragments:     chunk_df=chunk_df[~chunk_df["description"].str.contains("(Fragment",regex=False)]
+        if GTDB_only:        chunk_df=chunk_df[chunk_df["description"].str.split(Taxid_delimiter).apply(lambda x: x[-1].split(" ")[0]).isin(taxdf.ncbi_taxid)]
         
         if Add_decoy:
             decoy=chunk_df.copy()
