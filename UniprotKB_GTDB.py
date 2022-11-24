@@ -85,11 +85,12 @@ ranks=["superkingdom","phylum","class","order","family","genus","species"]
 metadata=[
 "H:/Databases/GTDB/Metadata/ar53_metadata_r207.tsv",
 "H:/Databases/GTDB/Metadata/bac120_metadata_r207.tsv"]
-taxdf=pd.concat([pd.read_csv(i,sep="\t",usecols=["ncbi_taxid","gtdb_taxonomy"]) for i in metadata])
+taxdf=pd.concat([pd.read_csv(i,sep="\t",usecols=["ncbi_taxid","gtdb_taxonomy"]) for i in metadata]).drop_duplicates()
 taxdf["ncbi_taxid"]=taxdf["ncbi_taxid"].astype(str)
 taxdf[ranks]=taxdf["gtdb_taxonomy"].str.rsplit(";",expand=True)
-    
 
+sizes=taxdf.groupby("ncbi_taxid").size()
+taxdf=taxdf[~taxdf["ncbi_taxid"].isin(sizes[sizes>1].index)] #remove dump taxa (ncbi taxa that map to multiple gtdb taxa)
 
 
 #%%
